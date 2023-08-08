@@ -1,0 +1,25 @@
+{
+  "name": "QAapi-PBL",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start:debug": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itc-s22020/QAapi-PBL.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/itc-s22020/QAapi-PBL/issues"
+  },
+  "homepage": "https://github.com/itc-s22020/QAapi-PBL#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^3.0.1"
+  }
+}
