@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id   String     @id @db.VarChar(32)
+  name      String     @db.VarChar(32)
+  password  String     @db.VarChar(32)
+  age       Int
+  gender    Boolean
+  mail      String     @db.VarChar(128)
+  admin     Boolean    @default(false)
+  like      Int        @default(0)
+  answers   Answer[]
+  questions Question[]
+}
+
+model Question {
+  q_id      Int      @id @default(autoincrement())
+  user      User     @relation(fields: [user_id], references: [user_id])
+  user_id   String   @db.VarChar(32)
+  Category  Category @relation(fields: [c_id], references: [c_id])
+  c_id      Int
+  best_a    Answer?  @relation("best_a", fields: [best_a_id], references: [a_id])
+  best_a_id Int?     @unique
+  title     String
+  date      DateTime
+  q_text    String
+  like      Int
+  view      Int
+  answers   Answer[]
+}
+
+model Answer {
+  a_id                   Int       @id @default(autoincrement())
+  user                   User      @relation(fields: [user_id], references: [user_id])
+  user_id                String    @db.VarChar(32)
+  question               Question  @relation(fields: [q_id], references: [q_id])
+  q_id                   Int
+  a_text                 String    @db.VarChar(32)
+  date                   DateTime  @db.Timestamp()
+  like                   Int
+  view                   Int
+  question_best_answered Question? @relation("best_a")
+}
+
+model Category {
+  c_id      Int        @id @default(autoincrement())
+  c_name    String     @db.VarChar(32)
+  questions Question[]
+}
