@@ -19,7 +19,9 @@
   },
   "homepage": "https://github.com/itc-s22020/QAapi-PBL#readme",
   "dependencies": {
-    "express": "^4.18.2",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
     "nodemon": "^3.0.1"
   }
 }
