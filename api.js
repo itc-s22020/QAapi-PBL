@@ -43,7 +43,8 @@ router.post('/user/login', async (req, res) => {
         }
     }).then((r) => r)
     if (user && bcrypt.compareSync(password, user.password)) {
-        const payload = {user: user}
+        const {password, ...data_without_pass} = user
+        const payload = {user: data_without_pass}
         const token = jwt.sign(payload, process.env.SECRET)
         res.status(200).json({message: 'ログイン成功', token: token})
     } else {
