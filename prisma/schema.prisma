@@ -13,7 +13,7 @@ datasource db {
 model User {
   user_id   String     @id @db.VarChar(32)
   name      String     @db.VarChar(32)
-  password  String     @db.VarChar(32)
+  password  String     @db.VarChar(64)
   age       Int
   gender    Boolean
   mail      String     @db.VarChar(128)
