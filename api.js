@@ -51,5 +51,29 @@ router.post('/user/login', async (req, res) => {
         res.status(401).json({message: 'ユーザー名かパスワードが違います'})
     }
 })
+/**
+ * 認証が必要なエンドポイントに挟むミドルウェア
+ * これ以降の処理では req.user でログイン中のユーザー情報を参照できる
+ */
+const Auth = (req, res, next) => {
+    const token = req.headers.authorization
+    if (token && token.split(' ')[0] === 'Bearer') {
+        jwt.verify(token.split(' ')[1], process.env.SECRET, (err, payload) => {
+            if (err) {
+                res.status(403).json({message: '認証失敗'})
+            } else {
+                req.user = payload.user
+                next()
+            }
+        })
+    } else {
+        res.status(403).json({message: 'トークンが必要です'})
+    }
+}
+
+router.get('/user/check', Auth, (req, res) => {
+    res.status(200).json({message: 'ログインしています', user: req.user})
+})
+
 
 module.exports = router
