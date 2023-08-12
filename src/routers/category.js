@@ -36,7 +36,7 @@ router.post('/delete', AuthAdmin, async (req, res) => {
     if (id) {
         await prisma.category.delete({
             where: {
-                c_id: id
+                c_id: parseInt(id)
             }
         }).then((r) => {
             res.json({
@@ -51,6 +51,32 @@ router.post('/delete', AuthAdmin, async (req, res) => {
         })
     } else {
         res.status(400).json({message: 'カテゴリIDが必要です'})
+    }
+})
+
+router.post('/edit', AuthAdmin, async (req, res) => {
+    const {id, name} = req.body
+    if (id && name) {
+        await prisma.category.update({
+            where: {
+                c_id: parseInt(id)
+            },
+            data: {
+                c_name: name
+            }
+        }).then((r) => {
+            res.json({
+                message: 'カテゴリ名変更完了',
+                category: {
+                    id: r.c_id,
+                    name: r.c_name
+                }
+            })
+        }).catch(() => {
+            res.status(500).json({message: 'カテゴリ名変更失敗'})
+        })
+    } else {
+        res.status(400).json({message: 'カテゴリIDと新しいカテゴリ名が必要です'})
     }
 })
 
