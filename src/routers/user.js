@@ -1,17 +1,11 @@
 const express = require('express')
 const router = express.Router()
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
 
-router.get('/', (req, res) => res.send('test'))
-
-router.get('/sample', (req, res) => {
-    res.json({message: 'test api'})
-})
-
-router.post('/user/register', async (req, res) => {
+router.post('/register', async (req, res) => {
     const {user_id, name, age, gender, mail} = req.body
     const password = bcrypt.hashSync(req.body.password, 10)
     await prisma.user.create({
@@ -35,7 +29,7 @@ router.post('/user/register', async (req, res) => {
     })
 })
 
-router.post('/user/login', async (req, res) => {
+router.post('/login', async (req, res) => {
     const {user_id, password} = req.body
     const user = await prisma.user.findUnique({
         where: {
@@ -71,9 +65,8 @@ const Auth = (req, res, next) => {
     }
 }
 
-router.get('/user/check', Auth, (req, res) => {
+router.get('/check', Auth, (req, res) => {
     res.status(200).json({message: 'ログインしています', user: req.user})
 })
-
 
 module.exports = router
