@@ -15,7 +15,7 @@ model User {
   name      String     @db.VarChar(32)
   password  String     @db.VarChar(64)
   age       Int
-  gender    Boolean
+  gender    Int        @db.SmallInt
   mail      String     @db.VarChar(128)
   admin     Boolean    @default(false)
   like      Int        @default(0)
