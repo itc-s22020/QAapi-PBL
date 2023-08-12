@@ -2,7 +2,7 @@ const express = require('express')
 const path = require("path");
 const router = express.Router()
 
-const userRouter = require("./routers/user");
+const userRouter = require("./routers/user").router;
 const categoryRouter = require("./routers/category");
 
 router.get('/', (req, res) => res.send('test'))

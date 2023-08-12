@@ -69,4 +69,4 @@ router.get('/check', Auth, (req, res) => {
     res.status(200).json({message: 'ログインしています', user: req.user})
 })
 
-module.exports = router
+module.exports = {router, Auth}
