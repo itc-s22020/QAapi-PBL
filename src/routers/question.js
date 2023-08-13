@@ -50,7 +50,7 @@ router.post('/new', Auth, async (req, res) => {
             q_text: r.q_text
         })
     }).catch(() => {
-        res.status(503).json({
+        res.status(400).json({
             message: '質問投稿失敗'
         })
     })

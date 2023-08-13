@@ -23,7 +23,7 @@ router.post('/register', async (req, res) => {
             user_id: user_id,
         })
     }).catch(() => {
-        res.status(503).json({
+        res.status(400).json({
             message: 'ユーザー登録失敗',
         })
     })
@@ -53,7 +53,7 @@ const Auth = (req, res, next) => {
     if (token && token.split(' ')[0] === 'Bearer') {
         jwt.verify(token.split(' ')[1], process.env.SECRET, (err, payload) => {
             if (err) {
-                res.status(403).json({message: '認証失敗'})
+                res.status(401).json({message: '認証失敗'})
             } else {
                 req.user = payload.user
                 next()
@@ -78,7 +78,7 @@ const AuthAdmin = (req, res, next) => Auth(req, res, async () => {
     if (user.admin === true) {
         next()
     } else {
-        res.status(401).json({message: '管理者権限が必要です', user: req.user})
+        res.status(403).json({message: '管理者権限が必要です', user: req.user})
     }
 })
 
