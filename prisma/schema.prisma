@@ -27,7 +27,7 @@ model Question {
   q_id      Int      @id @default(autoincrement())
   user      User     @relation(fields: [user_id], references: [user_id])
   user_id   String   @db.VarChar(32)
-  Category  Category @relation(fields: [c_id], references: [c_id])
+  category  Category @relation(fields: [c_id], references: [c_id])
   c_id      Int
   best_a    Answer?  @relation("best_a", fields: [best_a_id], references: [a_id])
   best_a_id Int?     @unique
