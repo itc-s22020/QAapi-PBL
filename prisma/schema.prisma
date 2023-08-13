@@ -45,7 +45,7 @@ model Answer {
   user_id                String    @db.VarChar(32)
   question               Question  @relation(fields: [q_id], references: [q_id])
   q_id                   Int
-  a_text                 String    @db.VarChar(32)
+  a_text                 String
   date                   DateTime  @default(now())
   like                   Int       @default(0)
   view                   Int       @default(0)
