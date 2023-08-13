@@ -28,25 +28,25 @@ router.post('/new', Auth, async (req, res) => {
         res.status(400).json({
             message: 'このユーザーはこの質問に回答済みです'
         })
-    } else {
-        await prisma.answer.create({
-            data: {
-                user_id: req.user,
-                q_id: q_id,
-                a_text: a_text
-            }
-        }).then((r) => {
-            res.status(200).json({
-                message: '回答投稿完了',
-                a_id: r.a_id,
-                a_text: r.a_text
-            })
-        }).catch(() => {
-            res.status(400).json({
-                message: '回答投稿失敗'
-            })
-        })
+        return
     }
+    await prisma.answer.create({
+        data: {
+            user_id: req.user,
+            q_id: q_id,
+            a_text: a_text
+        }
+    }).then((r) => {
+        res.status(200).json({
+            message: '回答投稿完了',
+            a_id: r.a_id,
+            a_text: r.a_text
+        })
+    }).catch(() => {
+        res.status(400).json({
+            message: '回答投稿失敗'
+        })
+    })
 })
 
 module.exports = router
