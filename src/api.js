@@ -4,6 +4,7 @@ const router = express.Router()
 
 const userRouter = require("./routers/user").router;
 const categoryRouter = require("./routers/category");
+const questionRouter = require("./routers/question");
 
 router.get('/', (req, res) => res.send('test'))
 
@@ -16,6 +17,9 @@ router.use('/user', userRouter)
 
 // "/api/category"
 router.use('/category', categoryRouter)
+
+// "/api/question"
+router.use('/question', questionRouter)
 
 // "/api/icons" では/static/icons内のファイルを静的に返す（ユーザーのアイコン用）
 router.use("/icons", express.static(path.join("static", "icons")))
