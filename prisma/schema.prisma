@@ -32,10 +32,10 @@ model Question {
   best_a    Answer?  @relation("best_a", fields: [best_a_id], references: [a_id])
   best_a_id Int?     @unique
   title     String
-  date      DateTime
+  date      DateTime @default(now())
   q_text    String
-  like      Int
-  view      Int
+  like      Int      @default(0)
+  view      Int      @default(0)
   answers   Answer[]
 }
 
@@ -46,9 +46,9 @@ model Answer {
   question               Question  @relation(fields: [q_id], references: [q_id])
   q_id                   Int
   a_text                 String    @db.VarChar(32)
-  date                   DateTime  @db.Timestamp()
-  like                   Int
-  view                   Int
+  date                   DateTime  @default(now())
+  like                   Int       @default(0)
+  view                   Int       @default(0)
   question_best_answered Question? @relation("best_a")
 }
 
