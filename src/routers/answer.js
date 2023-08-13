@@ -7,6 +7,17 @@ const {Auth} = require('./user')
 
 router.post('/new', Auth, async (req, res) => {
     const {q_id, a_text} = req.body
+    const question = await prisma.question.findUnique({
+        where: {
+            q_id: q_id
+        }
+    }).then(r => r)
+    if (question.user_id === req.user) {
+        res.status(400).json({
+            message: '自分の質問に回答を投稿することはできません'
+        })
+        return
+    }
     const count = await prisma.answer.count({
         where: {
             user_id: req.user,
