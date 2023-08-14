@@ -39,6 +39,7 @@ router.post('/login', async (req, res) => {
     if (user && bcrypt.compareSync(password, user.password)) {
         const payload = {user: user_id}
         const token = jwt.sign(payload, process.env.SECRET)
+        res.cookie('token', token, {httpOnly: true})
         res.status(200).json({message: 'ログイン成功', token: token})
     } else {
         res.status(401).json({message: 'ユーザー名かパスワードが違います'})
@@ -49,9 +50,9 @@ router.post('/login', async (req, res) => {
  * これ以降の処理では req.user でログイン中のユーザー情報を参照できる
  */
 const Auth = (req, res, next) => {
-    const token = req.headers.authorization
-    if (token && token.split(' ')[0] === 'Bearer') {
-        jwt.verify(token.split(' ')[1], process.env.SECRET, (err, payload) => {
+    const token = req.cookies.token
+    if (token) {
+        jwt.verify(token, process.env.SECRET, (err, payload) => {
             if (err) {
                 res.status(401).json({message: '認証失敗'})
             } else {
