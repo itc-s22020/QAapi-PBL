@@ -83,6 +83,11 @@ const AuthAdmin = (req, res, next) => Auth(req, res, async () => {
     }
 })
 
+router.get('/logout', Auth, async (req, res) => {
+    res.clearCookie('token')
+    res.status(200).json({message: 'ログアウトしました'})
+})
+
 router.get('/check', Auth, (req, res) => {
     res.status(200).json({message: 'ログインしています', user: req.user})
 })

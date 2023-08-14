@@ -123,6 +123,10 @@ axios.get(`${API_HOST}/api/user/check`, {withCredentials: true})
   "password": "pass"
 }
 ```
+## GET `/api/user/logout` ![](https://img.shields.io/badge/USER-green)
+ログアウトします。
+
+具体的には、クッキーからアクセストークンを削除します。
 ## GET `/api/user/check` ![](https://img.shields.io/badge/USER-green)
 ログインしていればステータスコード200を返します。
 
