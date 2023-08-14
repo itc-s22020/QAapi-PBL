@@ -168,3 +168,11 @@ axios.get(`${API_HOST}/api/user/check`, {withCredentials: true})
   "a_text": "タージマハルは必見です！日の出や日没の時間帯に訪れると美しい景色を楽しめます。"
 }
 ```
+## POST `/api/answer/delete` ![](https://img.shields.io/badge/ADMIN-red)
+回答を削除します。
+### リクエスト例
+```json
+{
+  "id": 1
+}
+```
