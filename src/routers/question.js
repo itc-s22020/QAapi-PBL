@@ -3,7 +3,7 @@ const router = express.Router()
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
 
-const {Auth} = require('./user')
+const {Auth, AuthAdmin} = require('./user')
 
 router.get('', async (req, res) => {
     await prisma.question.findMany({
@@ -93,6 +93,32 @@ router.get('/:q_id', async (req, res, next) => {
             answers: q.answers.map(answerToJSON)
         })))
     })
+})
+
+router.post('/delete', AuthAdmin, async (req, res) => {
+    const {id} = req.body
+    if (id) {
+        const deleteAnswers = prisma.answer.deleteMany({
+            where: {
+                q_id: id
+            }
+        })
+        const deleteQuestions = prisma.question.deleteMany({
+            where: {
+                q_id: id
+            }
+        })
+        await prisma.$transaction([deleteAnswers, deleteQuestions])
+            .then(() => {
+                res.json({
+                    message: '質問削除完了'
+                })
+            }).catch((e) => {
+                res.status(500).json({message: '質問削除失敗'})
+            })
+    } else {
+        res.status(400).json({message: '質問IDが必要です'})
+    }
 })
 
 const answerToJSON = (a) => {

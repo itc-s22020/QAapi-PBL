@@ -145,6 +145,16 @@ axios.get(`${API_HOST}/api/user/check`, {withCredentials: true})
   "q_text": "インドに行くのが初めてなので、観光スポットやおすすめの場所、注意すべきことなど、インド旅行に関するアドバイスを教えていただきたいです。"
 }
 ```
+## POST `/api/question/delete` ![](https://img.shields.io/badge/ADMIN-red)
+質問を削除します。
+
+この質問に対する回答も全て削除します。
+### リクエスト例
+```json
+{
+  "id": 1
+}
+```
 ## GET `/api/question/:q_id`
 `q_id`に該当する質問を返します。
 
