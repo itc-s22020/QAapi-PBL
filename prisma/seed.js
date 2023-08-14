@@ -52,6 +52,15 @@ const createUsers = async () => {
                 age: 45,
                 mail: 'koji123@example.com',
                 gender: 0
+            },
+            {
+                user_id: 'admin',
+                password: pass,
+                name: 'Administrator',
+                age: 20,
+                mail: 'admin@example.com',
+                gender: 0,
+                admin: true
             }
         ]
     })
