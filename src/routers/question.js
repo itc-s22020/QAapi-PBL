@@ -62,7 +62,7 @@ router.get('/:q_id', async (req, res, next) => {
         next()
         return
     }
-    await prisma.question.findMany({
+    await prisma.question.findUnique({
         where: {
             q_id: q_id
         },
@@ -80,8 +80,8 @@ router.get('/:q_id', async (req, res, next) => {
                 }
             },
         }
-    }).then((r) => {
-        res.json(r.map((q) => ({
+    }).then((q) => {
+        res.json({
             q_id: q.q_id,
             user_id: q.user_id,
             user_name: q.user.name,
@@ -94,7 +94,7 @@ router.get('/:q_id', async (req, res, next) => {
             c_name: q.category.c_name,
             best_a: answerToJSON(q.best_a),
             answers: q.answers.map(answerToJSON)
-        })))
+        })
     })
 })
 
