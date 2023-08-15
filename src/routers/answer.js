@@ -6,7 +6,12 @@ const prisma = new PrismaClient()
 const {Auth, AuthAdmin} = require('./user')
 
 router.post('/new', Auth, async (req, res) => {
-    const {q_id, a_text} = req.body
+    const a_text = req.body.a_text
+    const q_id = parseInt(req.body.q_id)
+    if (!q_id || !a_text) {
+        res.status(400).json({message: '質問ID、回答本文が必要です。'})
+        return
+    }
     const question = await prisma.question.findUnique({
         where: {
             q_id: q_id
@@ -50,7 +55,7 @@ router.post('/new', Auth, async (req, res) => {
 })
 
 router.post('/delete', AuthAdmin, async (req, res) => {
-    const {id} = req.body
+    const id = parseInt(req.body.id)
     if (id) {
         await prisma.answer.delete({
             where: {

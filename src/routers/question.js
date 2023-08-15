@@ -34,7 +34,13 @@ router.get('', async (req, res) => {
 })
 
 router.post('/new', Auth, async (req, res) => {
-    const {c_id, q_text, title} = req.body
+    const c_id = parseInt(req.body.c_id)
+    const q_text = req.body.q_text
+    const title = req.body.title
+    if (!c_id || !q_text || !title) {
+        res.status(400).json({message:'カテゴリID、タイトル、質問本文が必要です。'})
+        return
+    }
     await prisma.question.create({
         data: {
             user_id: req.user,
@@ -99,7 +105,7 @@ router.get('/:q_id', async (req, res, next) => {
 })
 
 router.post('/delete', AuthAdmin, async (req, res) => {
-    const {id} = req.body
+    const id = parseInt(req.body.id)
     if (id) {
         const deleteAnswers = prisma.answer.deleteMany({
             where: {

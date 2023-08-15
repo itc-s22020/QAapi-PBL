@@ -6,7 +6,11 @@ const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
 
 router.post('/register', async (req, res) => {
-    const {user_id, name, age, gender, mail} = req.body
+    const user_id = parseInt(req.body.user_id)
+    const name = req.body.name
+    const age = parseInt(req.body.age)
+    const gender = parseInt(req.body.gender)
+    const mail = req.body.mail
     const password = bcrypt.hashSync(req.body.password, 10)
     await prisma.user.create({
         data: {
@@ -31,6 +35,10 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     const {user_id, password} = req.body
+    if (!user_id || !password) {
+        res.status(400).json({message: 'ユーザー名、パスワードが必要です'})
+        return
+    }
     const user = await prisma.user.findUnique({
         where: {
             user_id: user_id

@@ -32,7 +32,7 @@ router.post('/register', AuthAdmin, async (req, res) => {
 })
 
 router.post('/delete', AuthAdmin, async (req, res) => {
-    const {id} = req.body
+    const id = parseInt(req.body.id)
     if (id) {
         await prisma.category.delete({
             where: {
@@ -55,11 +55,12 @@ router.post('/delete', AuthAdmin, async (req, res) => {
 })
 
 router.post('/edit', AuthAdmin, async (req, res) => {
-    const {id, name} = req.body
+    const id = parseInt(req.body.id)
+    const name = req.body.name
     if (id && name) {
         await prisma.category.update({
             where: {
-                c_id: parseInt(id)
+                c_id: id
             },
             data: {
                 c_name: name
