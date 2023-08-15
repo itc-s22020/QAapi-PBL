@@ -17,19 +17,7 @@ router.get('', async (req, res) => {
             }
         }
     }).then((r) => {
-        res.json(r.map((q) => ({
-            q_id: q.q_id,
-            user_id: q.user_id,
-            user_name: q.user.name,
-            title: q.title,
-            q_text: q.q_text,
-            date: q.date,
-            like: q.like,
-            view: q.view,
-            c_id: q.c_id,
-            c_name: q.category.c_name,
-            best_a: answerToJSON(q.best_a)
-        })))
+        res.json(r.map(questionToJSON))
     })
 })
 
@@ -88,17 +76,7 @@ router.get('/:q_id', async (req, res, next) => {
         }
     }).then((q) => {
         res.json({
-            q_id: q.q_id,
-            user_id: q.user_id,
-            user_name: q.user.name,
-            title: q.title,
-            q_text: q.q_text,
-            date: q.date,
-            like: q.like,
-            view: q.view,
-            c_id: q.c_id,
-            c_name: q.category.c_name,
-            best_a: answerToJSON(q.best_a),
+            ...questionToJSON(q),
             answers: q.answers.map(answerToJSON)
         })
     })
@@ -130,6 +108,22 @@ router.post('/delete', AuthAdmin, async (req, res) => {
     }
 })
 
+const questionToJSON = (q) => {
+    if (!q) return null
+    return {
+        q_id: q.q_id,
+        user_id: q.user_id,
+        user_name: q.user.name,
+        title: q.title,
+        q_text: q.q_text,
+        date: q.date,
+        like: q.like,
+        view: q.view,
+        c_id: q.c_id,
+        c_name: q.category.c_name,
+        best_a: answerToJSON(q.best_a)
+    }
+}
 const answerToJSON = (a) => {
     if (!a) return null
     return {
