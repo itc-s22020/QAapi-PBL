@@ -136,9 +136,21 @@ axios.get(`${API_HOST}/api/user/check`, {withCredentials: true})
 
 そうでなければステータスコード403を返します。
 ## GET `/api/question`
-質問一覧を返します。
+質問一覧を返します。 回答は**ベストアンサーのみ**返します。
 
-回答はベストアンサーのみ返します。
+次のクエリパラメータが使用できます。
+
+| パラメータ   | 説明                            |
+|---------|-------------------------------|
+| query   | 検索キーワード<br/>複数指定する場合はスペースで区切る |
+| user_id | 投稿者のユーザーID                    |
+| c_id    | カテゴリ                          |
+
+### リクエスト例
+カテゴリID`10`番の中で「クレヨンしんちゃん」か「映画」を含む質問を返します。
+```
+/api/question?query=クレヨンしんちゃん+映画&c_id=10
+```
 ## POST `/api/question/new` ![](https://img.shields.io/badge/USER-green)
 質問を投稿します。
 ### リクエスト例
@@ -150,9 +162,7 @@ axios.get(`${API_HOST}/api/user/check`, {withCredentials: true})
 }
 ```
 ## POST `/api/question/delete` ![](https://img.shields.io/badge/ADMIN-red)
-質問を削除します。
-
-この質問に対する回答も全て削除します。
+質問を削除します。この質問に対する**回答も全て削除**します。
 ### リクエスト例
 ```json
 {
@@ -160,9 +170,7 @@ axios.get(`${API_HOST}/api/user/check`, {withCredentials: true})
 }
 ```
 ## GET `/api/question/:q_id`
-`q_id`に該当する質問を返します。
-
-回答は全ての回答を返します。
+`q_id`に該当する質問を返します。 回答は**全ての回答**を返します。
 ## POST `/api/answer/new` ![](https://img.shields.io/badge/USER-green)
 回答を投稿します。
 ### リクエスト例

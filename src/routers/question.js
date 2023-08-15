@@ -6,6 +6,21 @@ const prisma = new PrismaClient()
 const {Auth, AuthAdmin} = require('./user')
 
 router.get('', async (req, res) => {
+    const query = req.query.query
+    const user_id = req.query.user_id
+    const c_id = parseInt(req.query.c_id)
+    const whereQuery = {where: {}}
+    const appendQuery = (data) => whereQuery.where = {...data, ...whereQuery.where}
+    // それぞれパラメータが設定されていれば検索条件に追加していく
+    if (query) {
+        // キーワードごとに '{q_text: キーワード}' と '{title: キーワード}' という条件を追加していく
+        const keywords = query.split(' ')
+        const orQuery = []
+        keywords.forEach((keyword) => ['q_text', 'title'].map((column) => orQuery.push({[column]: {contains: keyword}})))
+        appendQuery({OR: orQuery})
+    }
+    if (user_id) appendQuery({user_id: user_id})
+    if (c_id) appendQuery({c_id: c_id})
     await prisma.question.findMany({
         include: {
             user: true,
@@ -15,7 +30,8 @@ router.get('', async (req, res) => {
                     user: true,
                 }
             }
-        }
+        },
+        ...whereQuery
     }).then((r) => {
         res.json(r.map(questionToJSON))
     })
@@ -26,7 +42,7 @@ router.post('/new', Auth, async (req, res) => {
     const q_text = req.body.q_text
     const title = req.body.title
     if (!c_id || !q_text || !title) {
-        res.status(400).json({message:'カテゴリID、タイトル、質問本文が必要です。'})
+        res.status(400).json({message: 'カテゴリID、タイトル、質問本文が必要です。'})
         return
     }
     await prisma.question.create({
