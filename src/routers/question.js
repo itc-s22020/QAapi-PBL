@@ -58,7 +58,10 @@ router.post('/new', Auth, async (req, res) => {
 
 router.get('/:q_id', async (req, res, next) => {
     const q_id = parseInt(req.params.q_id)
-    if (!q_id) next()
+    if (!q_id) {
+        next()
+        return
+    }
     await prisma.question.findMany({
         where: {
             q_id: q_id
