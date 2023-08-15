@@ -74,6 +74,36 @@ axios.get(`${API_HOST}/api/user/check`, {withCredentials: true})
         console.log(`${d.user}としてログインしています`)
     })
 ```
+## POSTメソッドでのJSONデータの送信のやり方
+ログインリクエストを送る例です。
+### Fetch APIを使用する場合
+```js
+const data = {
+    user_id: 'yamato1987',
+    password: 'pass'
+}
+fetch(`${API_HOST}/api/user/login`, {
+    method: 'post',
+    body: JSON.stringify(data),
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    credentials: 'include'
+})
+    .then((r) => r.json())
+    .then((d) => console.log(`ログイン成功 ${d}`))
+```
+### Axiosを使用する場合
+```js
+const data = {
+    user_id: 'yamato1987',
+    password: 'pass'
+}
+axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
+    .then((r) => r.data)
+    .then((d) => console.log(`ログイン成功 ${d}`))
+```
+# エンドポイント一覧
 ## GET `/api/category`
 カテゴリ一覧を返します。
 ## POST `/api/category/register` ![](https://img.shields.io/badge/ADMIN-red)
