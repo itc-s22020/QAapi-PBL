@@ -91,6 +91,7 @@ router.get('/:q_id', async (req, res, next) => {
             },
         }
     }).then((q) => {
+        if (!q) return res.status(404).json({message: '質問が見つかりませんでした。'})
         res.json({
             ...questionToJSON(q),
             answers: q.answers.map(answerToJSON)
@@ -101,27 +102,27 @@ router.get('/:q_id', async (req, res, next) => {
 router.post('/delete', AuthAdmin, async (req, res) => {
     const id = parseInt(req.body.id)
     if (id) {
-        const deleteAnswers = prisma.answer.deleteMany({
-            where: {
-                q_id: id
-            }
-        })
-        const deleteQuestions = prisma.question.deleteMany({
-            where: {
-                q_id: id
-            }
-        })
-        await prisma.$transaction([deleteAnswers, deleteQuestions])
-            .then(() => {
-                res.json({
-                    message: '質問削除完了'
-                })
-            }).catch((e) => {
-                res.status(500).json({message: '質問削除失敗'})
-            })
-    } else {
         res.status(400).json({message: '質問IDが必要です'})
+        return
     }
+    const deleteAnswers = prisma.answer.deleteMany({
+        where: {
+            q_id: id
+        }
+    })
+    const deleteQuestions = prisma.question.deleteMany({
+        where: {
+            q_id: id
+        }
+    })
+    await prisma.$transaction([deleteAnswers, deleteQuestions])
+        .then(() => {
+            res.json({
+                message: '質問削除完了'
+            })
+        }).catch(() => {
+            res.status(500).json({message: '質問削除失敗'})
+        })
 })
 
 const questionToJSON = (q) => {
