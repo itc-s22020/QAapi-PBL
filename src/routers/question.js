@@ -125,6 +125,95 @@ router.post('/delete', AuthAdmin, async (req, res) => {
         })
 })
 
+router.post('/like', Auth, async (req, res) => {
+    const target_type = 0
+    const id = parseInt(req.body.id)
+    if (!id) {
+        res.status(400).json({message: '質問IDが必要です'})
+        return
+    }
+    await prisma.question.findUnique({
+        where: {
+            q_id: id
+        }
+    }).then(async (q) => {
+        if (!q) return res.status(404).json({message: '質問が見つかりませんでした。'})
+        const likeData = {
+            target_type: target_type,
+            user_id: req.user,
+            target_id: id
+        }
+        await prisma.like.findUnique({
+            where: {like_identifier: likeData}
+        }).then(async (r) => {
+            if (r) {
+                res.status(400).json({message: 'この質問はいいね済みです。'})
+                return
+            }
+            const increaseLikeCount = prisma.question.update({
+                where: {
+                    q_id: id
+                },
+                data: {
+                    like: q.like + 1
+                }
+            })
+            const createLikeData = prisma.like.create({
+                data: likeData
+            })
+            await prisma.$transaction([increaseLikeCount, createLikeData])
+                .then(() => {
+                    res.status(200).json({message: '質問にいいねしました。'})
+                })
+        })
+    })
+})
+
+router.post('/unlike', Auth, async (req, res) => {
+    const target_type = 0
+    const id = parseInt(req.body.id)
+    if (!id) {
+        res.status(400).json({message: '質問IDが必要です'})
+        return
+    }
+    await prisma.question.findUnique({
+        where: {
+            q_id: id
+        }
+    }).then(async (q) => {
+        if (!q) return res.status(404).json({message: '質問が見つかりませんでした。'})
+        const likeData = {
+            target_type: target_type,
+            user_id: req.user,
+            target_id: id
+        }
+        await prisma.like.findUnique({
+            where: {like_identifier: likeData}
+        }).then(async (r) => {
+            if (!r) {
+                res.status(400).json({message: 'この質問はいいねしていません。'})
+                return
+            }
+            const decreaseLikeCount = prisma.question.update({
+                where: {
+                    q_id: id
+                },
+                data: {
+                    like: q.like - 1
+                }
+            })
+            const deleteLikeData = prisma.like.delete({
+                where: {like_identifier: likeData}
+            })
+            await prisma.$transaction([decreaseLikeCount, deleteLikeData])
+                .then(() => {
+                    res.status(200).json({message: '質問へのいいねを解除しました。'})
+                })
+        })
+    })
+})
+
+
 const questionToJSON = (q) => {
     if (!q) return null
     return {
