@@ -201,15 +201,6 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
 ```
 ## GET `/api/question/:q_id`
 `q_id`に該当する質問を返します。 回答は**全ての回答**を返します。
-## POST `/api/answer/new` ![](https://img.shields.io/badge/USER-green)
-回答を投稿します。
-### リクエスト例
-```json
-{
-  "q_id": 1,
-  "a_text": "タージマハルは必見です！日の出や日没の時間帯に訪れると美しい景色を楽しめます。"
-}
-```
 ## POST `/api/question/like` ![](https://img.shields.io/badge/USER-green)
 質問にいいねします。
 ### リクエスト例
@@ -224,6 +215,15 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
 ```json
 {
   "id": 1
+}
+```
+## POST `/api/answer/new` ![](https://img.shields.io/badge/USER-green)
+回答を投稿します。
+### リクエスト例
+```json
+{
+  "q_id": 1,
+  "a_text": "タージマハルは必見です！日の出や日没の時間帯に訪れると美しい景色を楽しめます。"
 }
 ```
 ## POST `/api/answer/delete` ![](https://img.shields.io/badge/USER-green)
