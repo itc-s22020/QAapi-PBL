@@ -4,6 +4,7 @@ const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
 
 const {Auth} = require('./user')
+const SetLiked = require("../middlewares/like");
 
 router.post('/new', Auth, async (req, res) => {
     const a_text = req.body.a_text
@@ -98,92 +99,8 @@ router.post('/delete', Auth, async (req, res) => {
     })
 })
 
-router.post('/like', Auth, async (req, res) => {
-    const target_type = 1
-    const id = parseInt(req.body.id)
-    if (!id) {
-        res.status(400).json({message: '回答IDが必要です'})
-        return
-    }
-    await prisma.answer.findUnique({
-        where: {
-            a_id: id
-        }
-    }).then(async (a) => {
-        if (!a) return res.status(404).json({message: '回答が見つかりませんでした。'})
-        const likeData = {
-            target_type: target_type,
-            user_id: req.user,
-            target_id: id
-        }
-        await prisma.like.findUnique({
-            where: {like_identifier: likeData}
-        }).then(async (r) => {
-            if (r) {
-                res.status(400).json({message: 'この回答はいいね済みです。'})
-                return
-            }
-            const increaseLikeCount = prisma.answer.update({
-                where: {
-                    a_id: id
-                },
-                data: {
-                    like: a.like + 1
-                }
-            })
-            const createLikeData = prisma.like.create({
-                data: likeData
-            })
-            await prisma.$transaction([increaseLikeCount, createLikeData])
-                .then(() => {
-                    res.status(200).json({message: '回答にいいねしました。'})
-                })
-        })
-    })
-})
+router.post('/like', Auth, SetLiked(1, true))
 
-router.post('/unlike', Auth, async (req, res) => {
-    const target_type = 1
-    const id = parseInt(req.body.id)
-    if (!id) {
-        res.status(400).json({message: '回答IDが必要です'})
-        return
-    }
-    await prisma.answer.findUnique({
-        where: {
-            a_id: id
-        }
-    }).then(async (a) => {
-        if (!a) return res.status(404).json({message: '回答が見つかりませんでした。'})
-        const likeData = {
-            target_type: target_type,
-            user_id: req.user,
-            target_id: id
-        }
-        await prisma.like.findUnique({
-            where: {like_identifier: likeData}
-        }).then(async (r) => {
-            if (!r) {
-                res.status(400).json({message: 'この回答はいいねしていません。'})
-                return
-            }
-            const decreaseLikeCount = prisma.answer.update({
-                where: {
-                    a_id: id
-                },
-                data: {
-                    like: a.like - 1
-                }
-            })
-            const deleteLikeData = prisma.like.delete({
-                where: {like_identifier: likeData}
-            })
-            await prisma.$transaction([decreaseLikeCount, deleteLikeData])
-                .then(() => {
-                    res.status(200).json({message: '回答へのいいねを解除しました。'})
-                })
-        })
-    })
-})
+router.post('/unlike', Auth, SetLiked(1, false))
 
 module.exports = router

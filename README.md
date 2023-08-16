@@ -234,3 +234,19 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
   "id": 1
 }
 ```
+## POST `/api/answer/like` ![](https://img.shields.io/badge/USER-green)
+回答にいいねします。
+### リクエスト例
+```json
+{
+  "id": 1
+}
+```
+## POST `/api/answer/unlike` ![](https://img.shields.io/badge/USER-green)
+回答へのいいねを解除します。
+### リクエスト例
+```json
+{
+  "id": 1
+}
+```
