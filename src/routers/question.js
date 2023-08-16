@@ -101,7 +101,7 @@ router.get('/:q_id', async (req, res, next) => {
 
 router.post('/delete', AuthAdmin, async (req, res) => {
     const id = parseInt(req.body.id)
-    if (id) {
+    if (!id) {
         res.status(400).json({message: '質問IDが必要です'})
         return
     }
