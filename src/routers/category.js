@@ -3,7 +3,7 @@ const router = express.Router()
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
 
-const {AuthAdmin} = require('./user')
+const {AuthAdmin} = require('../middlewares/auth')
 
 router.get('', async (req, res) => {
     const categories = await prisma.category.findMany({})

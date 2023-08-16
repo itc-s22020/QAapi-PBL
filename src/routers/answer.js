@@ -3,7 +3,7 @@ const router = express.Router()
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
 
-const {Auth} = require('./user')
+const {Auth} = require("../middlewares/auth");
 const SetLiked = require("../middlewares/like");
 
 router.post('/new', Auth, async (req, res) => {
