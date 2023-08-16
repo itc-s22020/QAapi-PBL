@@ -125,19 +125,19 @@ router.post('/delete', AuthAdmin, async (req, res) => {
         })
 })
 
-router.post('/like', Auth, async (req, res) => {
-    const target_type = 0
+const Like = (target_type) => async (req, res) => {
+    const [typeStr, typeModel, idColumn] = target_type === 0 ? ['質問', 'question', 'q_id'] : ['回答', 'answer', 'a_id']
     const id = parseInt(req.body.id)
     if (!id) {
-        res.status(400).json({message: '質問IDが必要です'})
+        res.status(400).json({message: `${typeStr}IDが必要です`})
         return
     }
-    await prisma.question.findUnique({
+    await prisma[typeModel].findUnique({
         where: {
-            q_id: id
+            [idColumn]: id
         }
-    }).then(async (q) => {
-        if (!q) return res.status(404).json({message: '質問が見つかりませんでした。'})
+    }).then(async (post) => {
+        if (!post) return res.status(404).json({message: `${typeStr}が見つかりませんでした。`})
         const likeData = {
             target_type: target_type,
             user_id: req.user,
@@ -147,15 +147,15 @@ router.post('/like', Auth, async (req, res) => {
             where: {like_identifier: likeData}
         }).then(async (r) => {
             if (r) {
-                res.status(400).json({message: 'この質問はいいね済みです。'})
+                res.status(400).json({message: `この${typeStr}はいいね済みです。`})
                 return
             }
-            const increaseLikeCount = prisma.question.update({
+            const increaseLikeCount = prisma[typeModel].update({
                 where: {
-                    q_id: id
+                    [idColumn]: id
                 },
                 data: {
-                    like: q.like + 1
+                    like: post.like + 1
                 }
             })
             const createLikeData = prisma.like.create({
@@ -163,25 +163,25 @@ router.post('/like', Auth, async (req, res) => {
             })
             await prisma.$transaction([increaseLikeCount, createLikeData])
                 .then(() => {
-                    res.status(200).json({message: '質問にいいねしました。'})
+                    res.status(200).json({message: `${typeStr}にいいねしました。`})
                 })
         })
     })
-})
+}
 
-router.post('/unlike', Auth, async (req, res) => {
-    const target_type = 0
+const UnLike = (target_type) => async (req, res) => {
+    const [typeStr, typeModel, idColumn] = target_type === 0 ? ['質問', 'question', 'q_id'] : ['回答', 'answer', 'a_id']
     const id = parseInt(req.body.id)
     if (!id) {
-        res.status(400).json({message: '質問IDが必要です'})
+        res.status(400).json({message: `${typeStr}IDが必要です`})
         return
     }
-    await prisma.question.findUnique({
+    await prisma[typeModel].findUnique({
         where: {
-            q_id: id
+            [idColumn]: id
         }
-    }).then(async (q) => {
-        if (!q) return res.status(404).json({message: '質問が見つかりませんでした。'})
+    }).then(async (post) => {
+        if (!post) return res.status(404).json({message: `${typeStr}が見つかりませんでした。`})
         const likeData = {
             target_type: target_type,
             user_id: req.user,
@@ -191,15 +191,15 @@ router.post('/unlike', Auth, async (req, res) => {
             where: {like_identifier: likeData}
         }).then(async (r) => {
             if (!r) {
-                res.status(400).json({message: 'この質問はいいねしていません。'})
+                res.status(400).json({message: `この${typeStr}はいいねしていません。`})
                 return
             }
-            const decreaseLikeCount = prisma.question.update({
+            const decreaseLikeCount = prisma[typeModel].update({
                 where: {
-                    q_id: id
+                    [idColumn]: id
                 },
                 data: {
-                    like: q.like - 1
+                    like: post.like - 1
                 }
             })
             const deleteLikeData = prisma.like.delete({
@@ -207,12 +207,15 @@ router.post('/unlike', Auth, async (req, res) => {
             })
             await prisma.$transaction([decreaseLikeCount, deleteLikeData])
                 .then(() => {
-                    res.status(200).json({message: '質問へのいいねを解除しました。'})
+                    res.status(200).json({message: `${typeStr}へのいいねを解除しました。`})
                 })
         })
     })
-})
+}
 
+router.post('/like', Auth, Like(0))
+
+router.post('/unlike', Auth, UnLike(0))
 
 const questionToJSON = (q) => {
     if (!q) return null
