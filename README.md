@@ -278,3 +278,5 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
   "liked": true
 }
 ```
+## GET `/api/icons/:user_id`
+ユーザーアイコンを返します。
