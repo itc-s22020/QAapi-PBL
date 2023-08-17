@@ -217,6 +217,20 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
   "id": 1
 }
 ```
+## POST `/api/question/liked` ![](https://img.shields.io/badge/USER-green)
+質問へいいねしているかどうかを返します。
+### リクエスト例
+```json
+{
+  "id": 1
+}
+```
+### レスポンス例
+```json
+{
+  "liked": true
+}
+```
 ## POST `/api/answer/new` ![](https://img.shields.io/badge/USER-green)
 回答を投稿します。
 ### リクエスト例
@@ -248,5 +262,19 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
 ```json
 {
   "id": 1
+}
+```
+## POST `/api/answer/liked` ![](https://img.shields.io/badge/USER-green)
+回答へいいねしているかどうかを返します。
+### リクエスト例
+```json
+{
+  "id": 1
+}
+```
+### レスポンス例
+```json
+{
+  "liked": true
 }
 ```
