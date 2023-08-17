@@ -3,10 +3,15 @@ const router = express.Router()
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const {PrismaClient} = require('@prisma/client')
+const {Auth, AuthAdmin} = require("../middlewares/auth");
 const prisma = new PrismaClient()
 
 router.post('/register', async (req, res) => {
-    const {user_id, name, age, gender, mail} = req.body
+    const user_id = parseInt(req.body.user_id)
+    const name = req.body.name
+    const age = parseInt(req.body.age)
+    const gender = parseInt(req.body.gender)
+    const mail = req.body.mail
     const password = bcrypt.hashSync(req.body.password, 10)
     await prisma.user.create({
         data: {
@@ -31,6 +36,10 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     const {user_id, password} = req.body
+    if (!user_id || !password) {
+        res.status(400).json({message: 'ユーザー名、パスワードが必要です'})
+        return
+    }
     const user = await prisma.user.findUnique({
         where: {
             user_id: user_id
@@ -43,43 +52,6 @@ router.post('/login', async (req, res) => {
         res.status(200).json({message: 'ログイン成功', token: token})
     } else {
         res.status(401).json({message: 'ユーザー名かパスワードが違います'})
-    }
-})
-/**
- * 認証が必要なエンドポイントに挟むミドルウェア
- * これ以降の処理では req.user でログイン中のユーザー情報を参照できる
- */
-const Auth = (req, res, next) => {
-    const token = req.cookies.token
-    if (token) {
-        jwt.verify(token, process.env.SECRET, (err, payload) => {
-            if (err) {
-                res.status(401).json({message: '認証失敗'})
-            } else {
-                req.user = payload.user
-                next()
-            }
-        })
-    } else {
-        res.status(403).json({message: 'トークンが必要です'})
-    }
-}
-
-/**
- * 管理者権限が必要なエンドポイントに挟むミドルウェア
- * これ以降の処理では req.user でログイン中のユーザー情報を参照できる
- */
-
-const AuthAdmin = (req, res, next) => Auth(req, res, async () => {
-    const user = await prisma.user.findUnique({
-        where: {
-            user_id: req.user
-        }
-    }).then(r => r)
-    if (user.admin === true) {
-        next()
-    } else {
-        res.status(403).json({message: '管理者権限が必要です', user: req.user})
     }
 })
 
@@ -96,4 +68,4 @@ router.get('/checkadmin', AuthAdmin, (req, res) => {
     res.status(200).json({message: '管理者としてログインしています', user: req.user})
 })
 
-module.exports = {router, Auth, AuthAdmin}
+module.exports = router

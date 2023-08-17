@@ -21,6 +21,7 @@ model User {
   like      Int        @default(0)
   answers   Answer[]
   questions Question[]
+  likes     Like[]
 }
 
 model Question {
@@ -56,4 +57,13 @@ model Category {
   c_id      Int        @id @default(autoincrement())
   c_name    String     @db.VarChar(32)
   questions Question[]
+}
+
+model Like {
+  user        User   @relation(fields: [user_id], references: [user_id])
+  user_id     String @db.VarChar(32)
+  target_type Int    @db.SmallInt
+  target_id   Int
+
+  @@unique(fields: [user_id, target_type, target_id], name: "like_identifier")
 }

@@ -3,10 +3,16 @@ const router = express.Router()
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
 
-const {Auth, AuthAdmin} = require('./user')
+const {Auth} = require("../middlewares/auth");
+const SetLiked = require("../middlewares/like");
 
 router.post('/new', Auth, async (req, res) => {
-    const {q_id, a_text} = req.body
+    const a_text = req.body.a_text
+    const q_id = parseInt(req.body.q_id)
+    if (!q_id || !a_text) {
+        res.status(400).json({message: '質問ID、回答本文が必要です。'})
+        return
+    }
     const question = await prisma.question.findUnique({
         where: {
             q_id: q_id
@@ -14,7 +20,7 @@ router.post('/new', Auth, async (req, res) => {
     }).then(r => r)
     if (question.user_id === req.user) {
         res.status(400).json({
-            message: '自分の質問に回答を投稿することはできません'
+            message: '自分の質問に回答を投稿することはできません。'
         })
         return
     }
@@ -26,7 +32,7 @@ router.post('/new', Auth, async (req, res) => {
     })
     if (count > 0) {
         res.status(400).json({
-            message: 'このユーザーはこの質問に回答済みです'
+            message: 'あなたはこの質問に回答済みです。'
         })
         return
     }
@@ -49,12 +55,28 @@ router.post('/new', Auth, async (req, res) => {
     })
 })
 
-router.post('/delete', AuthAdmin, async (req, res) => {
-    const {id} = req.body
-    if (id) {
+router.post('/delete', Auth, async (req, res) => {
+    const id = parseInt(req.body.id)
+    if (!id) {
+        res.status(400).json({message: '回答IDが必要です'})
+        return
+    }
+    await prisma.answer.findUnique({
+        where: {
+            a_id: id
+        }
+    }).then(async (r) => {
+        if (!r) {
+            res.status(400).json({message: '回答データが見つかりませんでした。'})
+            return
+        }
+        if (r.user_id !== req.user) {
+            res.status(400).json({message: '他人の回答は削除できません。'})
+            return
+        }
         await prisma.answer.delete({
             where: {
-                a_id: parseInt(id)
+                a_id: id
             },
             include: {
                 question: true
@@ -74,9 +96,11 @@ router.post('/delete', AuthAdmin, async (req, res) => {
         }).catch(() => {
             res.status(500).json({message: '回答削除失敗'})
         })
-    } else {
-        res.status(400).json({message: '回答IDが必要です'})
-    }
+    })
 })
+
+router.post('/like', Auth, SetLiked(1, true))
+
+router.post('/unlike', Auth, SetLiked(1, false))
 
 module.exports = router

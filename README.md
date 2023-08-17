@@ -74,6 +74,36 @@ axios.get(`${API_HOST}/api/user/check`, {withCredentials: true})
         console.log(`${d.user}としてログインしています`)
     })
 ```
+## POSTメソッドでのJSONデータの送信のやり方
+ログインリクエストを送る例です。
+### Fetch APIを使用する場合
+```js
+const data = {
+    user_id: 'yamato1987',
+    password: 'pass'
+}
+fetch(`${API_HOST}/api/user/login`, {
+    method: 'post',
+    body: JSON.stringify(data),
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    credentials: 'include'
+})
+    .then((r) => r.json())
+    .then((d) => console.log(`ログイン成功 ${d}`))
+```
+### Axiosを使用する場合
+```js
+const data = {
+    user_id: 'yamato1987',
+    password: 'pass'
+}
+axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
+    .then((r) => r.data)
+    .then((d) => console.log(`ログイン成功 ${d}`))
+```
+# エンドポイント一覧
 ## GET `/api/category`
 カテゴリ一覧を返します。
 ## POST `/api/category/register` ![](https://img.shields.io/badge/ADMIN-red)
@@ -136,9 +166,21 @@ axios.get(`${API_HOST}/api/user/check`, {withCredentials: true})
 
 そうでなければステータスコード403を返します。
 ## GET `/api/question`
-質問一覧を返します。
+質問一覧を返します。 回答は**ベストアンサーのみ**返します。
 
-回答はベストアンサーのみ返します。
+次のクエリパラメータが使用できます。
+
+| パラメータ   | 説明                            |
+|---------|-------------------------------|
+| query   | 検索キーワード<br/>複数指定する場合はスペースで区切る |
+| user_id | 投稿者のユーザーID                    |
+| c_id    | カテゴリ                          |
+
+### リクエスト例
+カテゴリID`10`番の中で「クレヨンしんちゃん」か「映画」を含む質問を返します。
+```
+/api/question?query=クレヨンしんちゃん+映画&c_id=10
+```
 ## POST `/api/question/new` ![](https://img.shields.io/badge/USER-green)
 質問を投稿します。
 ### リクエスト例
@@ -150,9 +192,7 @@ axios.get(`${API_HOST}/api/user/check`, {withCredentials: true})
 }
 ```
 ## POST `/api/question/delete` ![](https://img.shields.io/badge/ADMIN-red)
-質問を削除します。
-
-この質問に対する回答も全て削除します。
+質問を削除します。この質問に対する**回答も全て削除**します。
 ### リクエスト例
 ```json
 {
@@ -160,9 +200,23 @@ axios.get(`${API_HOST}/api/user/check`, {withCredentials: true})
 }
 ```
 ## GET `/api/question/:q_id`
-`q_id`に該当する質問を返します。
-
-回答は全ての回答を返します。
+`q_id`に該当する質問を返します。 回答は**全ての回答**を返します。
+## POST `/api/question/like` ![](https://img.shields.io/badge/USER-green)
+質問にいいねします。
+### リクエスト例
+```json
+{
+  "id": 1
+}
+```
+## POST `/api/question/unlike` ![](https://img.shields.io/badge/USER-green)
+質問へのいいねを解除します。
+### リクエスト例
+```json
+{
+  "id": 1
+}
+```
 ## POST `/api/answer/new` ![](https://img.shields.io/badge/USER-green)
 回答を投稿します。
 ### リクエスト例
@@ -172,8 +226,24 @@ axios.get(`${API_HOST}/api/user/check`, {withCredentials: true})
   "a_text": "タージマハルは必見です！日の出や日没の時間帯に訪れると美しい景色を楽しめます。"
 }
 ```
-## POST `/api/answer/delete` ![](https://img.shields.io/badge/ADMIN-red)
-回答を削除します。
+## POST `/api/answer/delete` ![](https://img.shields.io/badge/USER-green)
+回答を削除します。投稿した本人のみ削除できます。
+### リクエスト例
+```json
+{
+  "id": 1
+}
+```
+## POST `/api/answer/like` ![](https://img.shields.io/badge/USER-green)
+回答にいいねします。
+### リクエスト例
+```json
+{
+  "id": 1
+}
+```
+## POST `/api/answer/unlike` ![](https://img.shields.io/badge/USER-green)
+回答へのいいねを解除します。
 ### リクエスト例
 ```json
 {
