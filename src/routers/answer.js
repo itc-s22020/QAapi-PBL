@@ -4,7 +4,7 @@ const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
 
 const {Auth} = require("../middlewares/auth");
-const SetLiked = require("../middlewares/like");
+const {SetLiked, IsLiked} = require("../middlewares/like");
 
 router.post('/new', Auth, async (req, res) => {
     const a_text = req.body.a_text
@@ -102,5 +102,7 @@ router.post('/delete', Auth, async (req, res) => {
 router.post('/like', Auth, SetLiked(1, true))
 
 router.post('/unlike', Auth, SetLiked(1, false))
+
+router.post('/liked', Auth, IsLiked(1))
 
 module.exports = router

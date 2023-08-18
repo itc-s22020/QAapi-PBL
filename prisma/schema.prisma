@@ -11,17 +11,18 @@ datasource db {
 }
 
 model User {
-  user_id   String     @id @db.VarChar(32)
-  name      String     @db.VarChar(32)
-  password  String     @db.VarChar(64)
-  age       Int
-  gender    Int        @db.SmallInt
-  mail      String     @db.VarChar(128)
-  admin     Boolean    @default(false)
-  like      Int        @default(0)
-  answers   Answer[]
-  questions Question[]
-  likes     Like[]
+  user_id     String     @id @db.VarChar(32)
+  name        String     @db.VarChar(32)
+  password    String     @db.VarChar(64)
+  age         Int
+  gender      Int        @db.SmallInt
+  mail        String     @db.VarChar(128)
+  admin       Boolean    @default(false)
+  like        Int        @default(0)
+  date_joined DateTime   @default(now())
+  answers     Answer[]
+  questions   Question[]
+  likes       Like[]
 }
 
 model Question {

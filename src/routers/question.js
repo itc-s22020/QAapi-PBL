@@ -4,7 +4,7 @@ const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
 
 const {Auth, AuthAdmin} = require('../middlewares/auth')
-const SetLiked = require("../middlewares/like");
+const {SetLiked, IsLiked} = require("../middlewares/like");
 
 router.get('', async (req, res) => {
     const query = req.query.query
@@ -129,6 +129,8 @@ router.post('/delete', AuthAdmin, async (req, res) => {
 router.post('/like', Auth, SetLiked(0, true))
 
 router.post('/unlike', Auth, SetLiked(0, false))
+
+router.post('/liked', Auth, IsLiked(0))
 
 const questionToJSON = (q) => {
     if (!q) return null

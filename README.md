@@ -165,6 +165,19 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
 管理者権限があればステータスコード200を返します。
 
 そうでなければステータスコード403を返します。
+## GET `/api/user/info/:user_id`
+ユーザーの情報を返します。
+### レスポンス例
+```json
+{
+  "user_id": "admin",
+  "name": "Administrator",
+  "age": 20,
+  "gender": 0,
+  "like": 0,
+  "admin": true
+}
+```
 ## GET `/api/question`
 質問一覧を返します。 回答は**ベストアンサーのみ**返します。
 
@@ -217,6 +230,20 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
   "id": 1
 }
 ```
+## POST `/api/question/liked` ![](https://img.shields.io/badge/USER-green)
+質問へいいねしているかどうかを返します。
+### リクエスト例
+```json
+{
+  "id": 1
+}
+```
+### レスポンス例
+```json
+{
+  "liked": true
+}
+```
 ## POST `/api/answer/new` ![](https://img.shields.io/badge/USER-green)
 回答を投稿します。
 ### リクエスト例
@@ -250,3 +277,19 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
   "id": 1
 }
 ```
+## POST `/api/answer/liked` ![](https://img.shields.io/badge/USER-green)
+回答へいいねしているかどうかを返します。
+### リクエスト例
+```json
+{
+  "id": 1
+}
+```
+### レスポンス例
+```json
+{
+  "liked": true
+}
+```
+## GET `/api/icons/:user_id`
+ユーザーアイコンを返します。

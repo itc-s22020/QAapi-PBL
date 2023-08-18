@@ -58,4 +58,33 @@ const SetLiked = (target_type, like) => async (req, res) => {
     })
 }
 
-module.exports = SetLiked
+/**
+ * 質問か回答に対していいねしているかを返す。
+ * @param target_type 質問の場合は0、回答の場合は1。
+ */
+const IsLiked = (target_type) => async (req, res) => {
+    const [typeStr, typeModel, idColumn] = target_type === 0 ? ['質問', 'question', 'q_id'] : ['回答', 'answer', 'a_id']
+    const id = parseInt(req.body.id)
+    if (!id) {
+        res.status(400).json({message: `${typeStr}IDが必要です`})
+        return
+    }
+    await prisma[typeModel].findUnique({
+        where: {
+            [idColumn]: id
+        }
+    }).then(async (post) => {
+        if (!post) return res.status(404).json({message: `${typeStr}が見つかりませんでした。`})
+        const likeData = {
+            target_type: target_type,
+            user_id: req.user,
+            target_id: id
+        }
+        await prisma.like.findUnique({
+            where: {like_identifier: likeData}
+        }).then((r) =>
+            res.json({liked: r !== null}))
+    })
+}
+
+module.exports = {SetLiked, IsLiked}
