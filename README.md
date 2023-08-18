@@ -165,6 +165,19 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
 管理者権限があればステータスコード200を返します。
 
 そうでなければステータスコード403を返します。
+## GET `/api/user/info/:user_id`
+ユーザーの情報を返します。
+### レスポンス例
+```json
+{
+  "user_id": "admin",
+  "name": "Administrator",
+  "age": 20,
+  "gender": 0,
+  "like": 0,
+  "admin": true
+}
+```
 ## GET `/api/question`
 質問一覧を返します。 回答は**ベストアンサーのみ**返します。
 

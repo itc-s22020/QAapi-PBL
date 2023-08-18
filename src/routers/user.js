@@ -68,4 +68,32 @@ router.get('/checkadmin', AuthAdmin, (req, res) => {
     res.status(200).json({message: '管理者としてログインしています', user: req.user})
 })
 
+router.get('/info/:user_id', async (req, res) => {
+    const {user_id} = req.params
+    if (!user_id) {
+        res.status(400).json({message: 'ユーザーID'})
+        return
+    }
+    const user = await prisma.user.findUnique({
+        where: {
+            user_id: user_id
+        }
+    }).then((r) => r)
+    if (!user) {
+        res.status(404).json({message: 'ユーザーが見つかりませんでした。'})
+        return
+    }
+    const {name, age, like, admin} = user
+    // 0->男性 1->女性 それ以外->無回答
+    const gender = user.gender === 0 ? '男性' : user.gender === 1 ? '女性' : '無回答'
+    res.status(200).json({
+        user_id: user_id,
+        name: name,
+        age: age,
+        gender: gender,
+        like: like,
+        admin: admin
+    })
+})
+
 module.exports = router
