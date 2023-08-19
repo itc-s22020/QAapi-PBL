@@ -126,6 +126,47 @@ router.post('/delete', AuthAdmin, async (req, res) => {
         })
 })
 
+router.post('/best', Auth, async (req, res) => {
+    const q_id = parseInt(req.body.q_id)
+    const a_id = parseInt(req.body.a_id)
+    if (!q_id || !a_id) {
+        res.status(400).json({message: '質問IDが必要です'})
+        return
+    }
+    await prisma.question.findUnique({
+        where: {
+            q_id: q_id
+        },
+        include: {
+            answers: true
+        }
+    }).then(async (question) => {
+        if (!question) {
+            res.status(400).json({message: '質問データが見つかりませんでした。'})
+            return
+        }
+        if (question.user_id !== req.user) {
+            res.status(400).json({message: '質問の投稿者のみベストアンサーを設定できます。'})
+            return
+        }
+        const answer = question.answers.filter((a) => a.a_id === a_id)[0]
+        if (!answer) {
+            res.status(400).json({message: '回答データが見つかりませんでした。'})
+            return
+        }
+        await prisma.question.update({
+            where: {
+                q_id: q_id
+            },
+            data: {
+                best_a_id: a_id
+            }
+        }).then(() => {
+            res.status(200).json({message: 'ベストアンサーを更新しました。'})
+        })
+    })
+})
+
 router.post('/like', Auth, SetLiked(0, true))
 
 router.post('/unlike', Auth, SetLiked(0, false))
