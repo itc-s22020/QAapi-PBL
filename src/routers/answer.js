@@ -64,14 +64,17 @@ router.post('/delete', Auth, async (req, res) => {
     await prisma.answer.findUnique({
         where: {
             a_id: id
+        },
+        include: {
+            question: true
         }
     }).then(async (r) => {
         if (!r) {
             res.status(400).json({message: '回答データが見つかりませんでした。'})
             return
         }
-        if (r.user_id !== req.user) {
-            res.status(400).json({message: '他人の回答は削除できません。'})
+        if (r.user_id !== req.user && req.user !== r.question.user_id) {
+            res.status(400).json({message: `他人の回答は削除できません。`})
             return
         }
         await prisma.answer.delete({

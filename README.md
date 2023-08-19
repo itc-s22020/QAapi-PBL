@@ -254,7 +254,7 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
 }
 ```
 ## POST `/api/answer/delete` ![](https://img.shields.io/badge/USER-green)
-回答を削除します。投稿した本人のみ削除できます。
+回答を削除します。投稿した本人か、その質問の投稿者のみ削除できます。
 ### リクエスト例
 ```json
 {
