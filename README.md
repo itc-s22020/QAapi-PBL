@@ -214,6 +214,15 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
 ```
 ## GET `/api/question/:q_id`
 `q_id`に該当する質問を返します。 回答は**全ての回答**を返します。
+## POST `/api/question/best` ![](https://img.shields.io/badge/USER-green)
+質問のベストアンサーを設定します。質問の投稿者のみ設定できます。
+### リクエスト例
+```json
+{
+  "q_id": 1,
+  "a_id": 3
+}
+```
 ## POST `/api/question/like` ![](https://img.shields.io/badge/USER-green)
 質問にいいねします。
 ### リクエスト例
@@ -254,7 +263,7 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
 }
 ```
 ## POST `/api/answer/delete` ![](https://img.shields.io/badge/USER-green)
-回答を削除します。投稿した本人のみ削除できます。
+回答を削除します。投稿した本人か、その質問の投稿者のみ削除できます。
 ### リクエスト例
 ```json
 {
