@@ -204,7 +204,7 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
   "q_text": "インドに行くのが初めてなので、観光スポットやおすすめの場所、注意すべきことなど、インド旅行に関するアドバイスを教えていただきたいです。"
 }
 ```
-## POST `/api/question/delete` ![](https://img.shields.io/badge/ADMIN-red)
+## POST `/api/question/delete` ![](https://img.shields.io/badge/USER-green)
 質問を削除します。この質問に対する**回答も全て削除**します。
 ### リクエスト例
 ```json

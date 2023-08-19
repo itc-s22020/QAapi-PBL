@@ -83,7 +83,7 @@ router.get('/info/:user_id', async (req, res) => {
         res.status(404).json({message: 'ユーザーが見つかりませんでした。'})
         return
     }
-    const {name, age, like, admin} = user
+    const {name, age, like, admin, date_joined} = user
     // 0->男性 1->女性 それ以外->無回答
     const gender = user.gender === 0 ? '男性' : user.gender === 1 ? '女性' : '無回答'
     res.status(200).json({
@@ -92,7 +92,8 @@ router.get('/info/:user_id', async (req, res) => {
         age: age,
         gender: gender,
         like: like,
-        admin: admin
+        admin: admin,
+        date_joined: date_joined
     })
 })
 
