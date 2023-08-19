@@ -3,7 +3,7 @@ const router = express.Router()
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
 
-const {Auth, AuthAdmin} = require('../middlewares/auth')
+const {Auth} = require('../middlewares/auth')
 const {SetLiked, IsLiked} = require("../middlewares/like");
 
 router.get('', async (req, res) => {
@@ -100,10 +100,26 @@ router.get('/:q_id', async (req, res, next) => {
     })
 })
 
-router.post('/delete', AuthAdmin, async (req, res) => {
+router.post('/delete', Auth, async (req, res) => {
     const id = parseInt(req.body.id)
     if (!id) {
         res.status(400).json({message: '質問IDが必要です'})
+        return
+    }
+    const question = await prisma.question.findUnique({
+        where: {
+            q_id: id
+        },
+        include: {
+            user: true
+        }
+    })
+    if (!question) {
+        res.status(404).json({message: '質問が見つかりませんでした。'})
+        return
+    }
+    if (question.user_id !== req.user) {
+        res.status(400).json({message: `他人の質問は削除できません。 ${question.user_id} ${req.user}`})
         return
     }
     const deleteAnswers = prisma.answer.deleteMany({
@@ -111,7 +127,7 @@ router.post('/delete', AuthAdmin, async (req, res) => {
             q_id: id
         }
     })
-    const deleteQuestions = prisma.question.deleteMany({
+    const deleteQuestions = prisma.question.delete({
         where: {
             q_id: id
         }
