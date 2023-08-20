@@ -178,6 +178,8 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
   "admin": true
 }
 ```
+## GET `/api/user/ranking`
+ユーザーを情報をいいね数の多い順で返します。
 ## GET `/api/question`
 質問一覧を返します。 回答は**ベストアンサーのみ**返します。
 

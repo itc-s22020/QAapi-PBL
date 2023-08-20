@@ -97,4 +97,19 @@ router.get('/info/:user_id', async (req, res) => {
     })
 })
 
+router.get('/ranking', async (req, res) => {
+    const users = await prisma.user.findMany({
+        orderBy: [
+            {
+                like: 'desc'
+            }
+        ]
+    })
+    const data = users.map((user) => {
+        const {user_id, name, age, gender, like, admin, date_joined} = user
+        return {user_id, name, age, gender, like, admin, date_joined}
+    })
+    res.status(200).json(data)
+})
+
 module.exports = router
