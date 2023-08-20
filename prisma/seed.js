@@ -19,7 +19,8 @@ const createUsers = async () => {
                 name: '山田 大和',
                 age: 34,
                 mail: 'yamato1987@example.com',
-                gender: 0
+                gender: 0,
+                like: 22
             },
             {
                 user_id: 'sakura_55',
@@ -27,7 +28,8 @@ const createUsers = async () => {
                 name: '佐藤 さくら',
                 age: 28,
                 mail: 'sakura_55@example.com',
-                gender: 1
+                gender: 1,
+                like: 30
             },
             {
                 user_id: 'takumi88',
@@ -35,7 +37,8 @@ const createUsers = async () => {
                 name: '田中 巧',
                 age: 22,
                 mail: 'takumi88@example.com',
-                gender: 0
+                gender: 0,
+                like: 28
             },
             {
                 user_id: 'aya_mori',
@@ -43,7 +46,8 @@ const createUsers = async () => {
                 name: '森 彩',
                 age: 30,
                 mail: 'aya_mori@example.com',
-                gender: 1
+                gender: 1,
+                like: 29
             },
             {
                 user_id: 'koji123',
@@ -51,7 +55,8 @@ const createUsers = async () => {
                 name: '伊藤 浩二',
                 age: 45,
                 mail: 'koji123@example.com',
-                gender: 0
+                gender: 0,
+                like: 23
             },
             {
                 user_id: 'admin',
@@ -60,7 +65,8 @@ const createUsers = async () => {
                 age: 20,
                 mail: 'admin@example.com',
                 gender: 0,
-                admin: true
+                admin: true,
+                like: 0
             },
             {
                 user_id: 'takako_99',
@@ -68,7 +74,8 @@ const createUsers = async () => {
                 name: '高田 優子',
                 age: 27,
                 mail: 'takako_99@example.com',
-                gender: 1
+                gender: 1,
+                like: 10
             },
             {
                 user_id: 'kotaro_it',
@@ -76,7 +83,8 @@ const createUsers = async () => {
                 name: '伊藤 光太郎',
                 age: 32,
                 mail: 'kotaro_it@example.com',
-                gender: 0
+                gender: 0,
+                like: 13
             }
             , {
                 user_id: 'misato_nakamura',
@@ -84,7 +92,8 @@ const createUsers = async () => {
                 name: '中村 みさと',
                 age: 23,
                 mail: 'misato_nakamura@example.com',
-                gender: 1
+                gender: 1,
+                like: 10
             }
             , {
                 user_id: 'ren_sasaki',
@@ -92,7 +101,8 @@ const createUsers = async () => {
                 name: '佐々木 蓮',
                 age: 29,
                 mail: 'ren_sasaki@example.com',
-                gender: 0
+                gender: 0,
+                like: 20
             }
             , {
                 user_id: 'maiko_taguchi',
@@ -100,7 +110,8 @@ const createUsers = async () => {
                 name: '田口 舞子',
                 age: 35,
                 mail: 'maiko_taguchi@example.com',
-                gender: 1
+                gender: 1,
+                like: 14
             }
 
         ]
