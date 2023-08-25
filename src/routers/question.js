@@ -33,8 +33,9 @@ router.get('', async (req, res) => {
             }
         },
         ...whereQuery
-    }).then((r) => {
-        res.json(r.map(questionToJSON))
+    }).then((questions) => {
+        questions.sort(compareDate)
+        res.json(questions.map(questionToJSON))
     })
 })
 
@@ -93,9 +94,12 @@ router.get('/:q_id', async (req, res, next) => {
         }
     }).then((q) => {
         if (!q) return res.status(404).json({message: '質問が見つかりませんでした。'})
+        const answers = q.answers
+        answers.sort(compareDate)
+        answers.sort(compareLikes)
         res.json({
             ...questionToJSON(q),
-            answers: q.answers.map(answerToJSON)
+            answers: answers.map(answerToJSON)
         })
     })
 })
@@ -217,5 +221,8 @@ const answerToJSON = (a) => {
         view: a.view
     }
 }
+
+const compareDate = (a, b) => new Date(a.date) < new Date(b.date) ? 1 : -1
+const compareLikes = (a, b) => a.like < b.like ? 1 : -1
 
 module.exports = router

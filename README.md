@@ -178,8 +178,12 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
   "admin": true
 }
 ```
+## GET `/api/user/ranking`
+ユーザーを情報をいいね数の多い順で返します。
 ## GET `/api/question`
 質問一覧を返します。 回答は**ベストアンサーのみ**返します。
+
+質問は日付が新しい順でソートされます。
 
 次のクエリパラメータが使用できます。
 
@@ -214,6 +218,8 @@ axios.post(`${API_HOST}/api/user/login`, data, {withCredentials: true})
 ```
 ## GET `/api/question/:q_id`
 `q_id`に該当する質問を返します。 回答は**全ての回答**を返します。
+
+回答は日付が古い順、いいねが多い順でソートされます。
 ## POST `/api/question/best` ![](https://img.shields.io/badge/USER-green)
 質問のベストアンサーを設定します。質問の投稿者のみ設定できます。
 ### リクエスト例

@@ -7,7 +7,7 @@ const {Auth, AuthAdmin} = require("../middlewares/auth");
 const prisma = new PrismaClient()
 
 router.post('/register', async (req, res) => {
-    const user_id = parseInt(req.body.user_id)
+    const user_id = req.body.user_id
     const name = req.body.name
     const age = parseInt(req.body.age)
     const gender = parseInt(req.body.gender)
@@ -27,7 +27,8 @@ router.post('/register', async (req, res) => {
             message: 'ユーザー登録成功',
             user_id: user_id,
         })
-    }).catch(() => {
+    }).catch((e) => {
+        console.log(e)
         res.status(400).json({
             message: 'ユーザー登録失敗',
         })
@@ -95,6 +96,21 @@ router.get('/info/:user_id', async (req, res) => {
         admin: admin,
         date_joined: date_joined
     })
+})
+
+router.get('/ranking', async (req, res) => {
+    const users = await prisma.user.findMany({
+        orderBy: [
+            {
+                like: 'desc'
+            }
+        ]
+    })
+    const data = users.map((user) => {
+        const {user_id, name, age, gender, like, admin, date_joined} = user
+        return {user_id, name, age, gender, like, admin, date_joined}
+    })
+    res.status(200).json(data)
 })
 
 module.exports = router
